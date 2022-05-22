@@ -3,14 +3,16 @@ title: "Exploracion_Plantas_extintass"
 author: "Cristobal Gomez M"
 date: "22-05-2022"
 output:
-  html_document: default
   pdf_document: default
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,warning=F,message = F)
 library(tidyverse)
 library(kableExtra)
+library(knitr)
 ```
 
 ## Introduccion
@@ -27,4 +29,27 @@ threats <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/ti
 ## Datos de sudamerica
 El número de especies que hay en sudamerica en la base de datos `r plants %>% dplyr::filter(continent=="South America") %>% nrow()` especies  
 
+```{r}
+data("msleep")
+Tabla <- msleep %>% group_by(vore) %>% 
+  summarise_at("sleep_total", .funs = list(Mean = mean, SD = sd)) %>% 
+  dplyr::filter(!is.na(vore)) %>%
+  arrange(desc(Mean))
+
+#kable(Tabla,digits = 2) # el digitals es para limitar la cantidad de decimales #que aparecen, para mejoras la tabla sera lo siguiente
+kable(Tabla, digits = 2) %>% kable_styling(bootstrap_options = c("striped", 
+    "hover", "condensed"),full_width = F)
+
+```
+
+
+```{r}
+msleep_long <- msleep %>% dplyr::select(name, vore, 
+    sleep_total, brainwt) #en el selec pongo las variables que quiero que se #muestres , y el caption es el titulo, lo demas se recomienda dejar igual
+
+kable(msleep_long, digits = 2, caption = "La base de datos entera") %>% 
+    kable_styling(bootstrap_options = c("striped", 
+        "hover", "condensed"), full_width = F) %>% 
+    scroll_box(width = "800px", height = "200px")
+```
 
